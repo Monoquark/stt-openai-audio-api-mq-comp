@@ -30,16 +30,19 @@ Supported component type entrypoints
 WARNING: Can't send results that are too large. When in doubt, yield with chunks of your response in order.
 '''
 
+from .model import STTModel
+stt_model = STTModel()
+
 # For speech-to-text models
 async def start_stt(request_iterator) -> str:
-    async for audio_chunk, sample_rate, sample_width, channels in request_unpacker(request_iterator):
-        audio_chunk: bytes
-        sample_rate: int
-        sample_width: int
-        channels: int
-
-        response = "Hello world from STT!"
-        yield response
+    global stt_model
+    audio, sample_rate, sample_width, channels = b'', 48000, 2, 2
+    async for audio_chunk, sample_rate_chunk, sample_width_chunk, channels_chunk in request_unpacker(request_iterator): # receiving chunks of info through a stream
+        audio += audio_chunk
+        sample_rate = sample_rate_chunk
+        sample_width = sample_width_chunk
+        channels = channels_chunk
+    yield stt_model(audio, sample_rate, sample_width, channels)
 
 # For text generation models
 async def start_t2t(request_iterator) -> str:

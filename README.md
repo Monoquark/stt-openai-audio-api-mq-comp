@@ -1,30 +1,51 @@
-# J.A.I.son Component Template
-This is a template to make components for Project J.A.I.son.
+# OpenAI Audio API STT Component by Monoquark
 
-## What is a component?
-A component is something the core of Project J.A.I.son uses to generate responses. These are hot-swappable implementations designed for users to pick and choose which e.g. model they want to use in the project. These are mainly intended to be adapters for models and APIs, but these can be extended to anything.
+## What is this for?
+Uses the [OpenAI Audio API](https://platform.openai.com/docs/api-reference/audio/createTranscription) to perform transcription on incoming audio bytes using their latest whisper model model.
 
-These components support **AND ENCOURAGE** the use of data-streaming. When possible, model implementations should stream back their results using [python generators](https://wiki.python.org/moin/Generators)
+Note, alternative providers with a compatible API accepting wave audio can be used as well, see "Configuration" below.
 
-## How does this work?
-[`jaison-core`](https://github.com/limitcantcode/jaison-core) will use either `start.bat` for Windows or `start.sh` for Unix-like systems to load the right virtual environment and run the component on the specified port.
+## Setup
 
-The actual component runs a [GRPC](https://github.com/grpc/grpc) server that uses the configured component to transform data.
+Windows
+```
+conda create -n jaison-comp-stt-openai-audio-api python=3.12
+conda activate jaison-comp-stt-openai-audio-api
+pip install -r requirements.txt
+```
 
-## What do I do?
-1. Minimum dependencies are found in `requirements.txt`. You can install them using `pip install -r requirements.txt`. Please ensure you do this in a (python or conda) virtual environment.
+Unix
+```
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+```
 
-2. Update `metadata.yaml` with your project-specific information.
+Furthermore, create a `.env` file in the root of this project with the following:
+```
+OPENAI_API_KEY=<openai api key like sk-...>
+```
+You can find you OpenAI API token [here](https://platform.openai.com/api-keys) as shown below:
 
-3. Implement your model in `src/custom/__init__.py`. Pick out the associated function that was configured in step 2 and implement that one. Other ones can remain blank.
+<img src="./assets/openai_1.png" alt="openai api token location 1" height="200"/>
+<img src="./assets/openai_2.png" alt="openai api token location 2" height="200"/>
 
-4. Update the `start` scripts to run the component starting from the root directory. This should include loading the right virtual environment given the user followed the setup steps you define in the next step. If your component can only run on either Windows or Unix machines, `metadata.yaml` should reflect this and the associated start script won't be used.
+An example `.env.example` file is provided.
 
-5. Fill out the `README-template.md` with details about this project, and most importantly **how to set up the project with the correct virtual environment to run the component.** If there are other special restrictions like hardware or other special setup instructions, state them there.
+## Testing
+Assuming you are in the right virtual environment and are in the root directory:
+```
+python ./src/main.py --port=5000
+```
+If it runs, it should be fine.
 
-6. Cleanup the project (replacing this `README.md` with the new `README-template.md`, removing `CONTRIBUTING.md`, etc.).
+## Configuration
+In `config.json`, update parameters (`model`, `language`, `prompt`, `temperature`) according to the [OpenAI Audio API Documentation](https://platform.openai.com/docs/api-reference/audio/createTranscription).
 
-7. Upload to Github and share your work on the [Discord server](https://discord.gg/Z8yyEzHsYM) so we can add you component to the list of implementations for everyone to use!
+Additionally available:
+- `base_url`: path to the API. Can be used for local models and other providers
+- `env`: filepath to your `.env` environment file
 
-## Contributing
-I am accepting contributions for this package. If you would like to contribute, please refer to [CONTRIBUTING](https://github.com/limitcantcode/jaison-grpc/tree/main/CONTRIBUTING.md).
+## Related stuff
+Project J.A.I.son: https://github.com/limitcantcode/jaison-core
+Join the community Discord: https://discord.gg/Z8yyEzHsYM

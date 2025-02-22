@@ -1,0 +1,6 @@
+endpoint: "https://api.openai.com/v1" # API endpoint
+model: "whisper-1" # Model name
+language: "en" # Language that will be expected
+prompt: "" # Prompt to tell model about specific phrases etc
+temperature: 0 # Creativity
+env: ".env" # Path to .env file

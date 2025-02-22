@@ -2,3 +2,10 @@ __pycache__
 .env
 *.log
 !.gitignore
+# pixi environments
+.pixi
+*.egg-info
+# pixi stuff polluting venv / conda approach
+pixi.lock
+pyproject.toml
+.gitattributes
